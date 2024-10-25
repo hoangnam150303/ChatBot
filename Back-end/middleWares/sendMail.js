@@ -56,7 +56,6 @@ const sendMail = async (email, subject, otp) => {
     </body>
   </html>
   `;
-
   await transport.sendMail({
     from: process.env.Gmail,
     to: email,
