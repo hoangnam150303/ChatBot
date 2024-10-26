@@ -68,24 +68,51 @@
   </head>
   <body>
     <div class="card">
-      <span class="card__title">OTP</span>
-      <p class="card__content">
-        We have just sent you an OTP code for your account login. Please check
-        and fill in the form below.
-      </p>
-      <div class="card__form">
-        <input placeholder="Your OTP" type="number" id="otp" />
-        <button class="submit" onclick="submitHandler(event)">SUBMIT</button>
-      </div>
+      <form id="verifyForm">
+        <span class="card__title">OTP</span>
+        <p class="card__content">
+          We have just sent you an OTP code for your account login. Please check
+          and fill in the form below.
+        </p>
+        <div class="card__form">
+          <input placeholder="Your OTP" type="text" id="otp" />
+          <button class="submit">SUBMIT</button>
+        </div>
+      </form>
     </div>
 
     <script>
-      function submitHandler(event) {
-        event.preventDefault();
+      document
+        .getElementById("verifyForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
 
-        var otp = document.getElementById("otp").value;
-        console.log("Submitted OTP:", otp);
-      }
+          const otp = document.getElementById("otp").value;
+          console.log(typeof otp);
+          const verifyToken = localStorage.getItem("verifyToken");
+
+          console.log("Sending OTP and Verify Token:", otp, verifyToken); // Kiểm tra giá trị được gửi
+
+          try {
+            const response = await fetch("/api/user/verify", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ otp, verifyToken }),
+            });
+
+            const data = await response.json();
+            console.log("Response from backend:", data);
+            if (data.success) {
+              window.location.href = "/verifyPage";
+            } else {
+              alert(data.message || "Verification failed!");
+            }
+          } catch (error) {
+            console.error("Error during API call:", error);
+          }
+        });
     </script>
   </body>
 </html>

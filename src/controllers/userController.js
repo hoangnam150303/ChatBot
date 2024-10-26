@@ -17,14 +17,14 @@ const loginUser = async (req, res) => {
     }
 
     const otp = Math.floor(Math.random() * 1000000); // random otp by Math.floor
-
     const verifyToken = jwt.sign({ user, otp }, process.env.Activation_sec, {
       // verifytoken
-      expiresIn: "5m",
+      expiresIn: "10m",
     });
 
     await sendMail(email, "ChatBot", otp); // call method sendMail and put 3 parametors
     res.json({
+      success: true,
       message: "OTP send to your mail",
       verifyToken,
     });
@@ -39,6 +39,7 @@ const loginUser = async (req, res) => {
 const verifyUser = async (req, res) => {
   try {
     const { otp, verifyToken } = req.body; //
+    console.log(typeof otp);
     const verify = jwt.verify(verifyToken, process.env.Activation_sec);
 
     if (!verify) {
@@ -46,7 +47,8 @@ const verifyUser = async (req, res) => {
         message: "OTP Expired",
       });
     }
-    if (verify.otp !== otp) {
+    console.log(verify.otp == otp);
+    if (verify.otp.toString() !== otp.toString()) {
       return res.status(400).json({
         message: "Wrong otp",
       });
