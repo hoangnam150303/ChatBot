@@ -80,8 +80,19 @@ const myProfile = async (req, res) => {
   }
 };
 
+const getLoginPage = (req, res) => {
+  res.render("login.ejs");
+};
+
+const getVerifyPage = (req, res) => {
+  const { token } = req.query;
+  res.render("verify.ejs");
+};
+
 module.exports = {
   loginUser,
   verifyUser,
   myProfile,
+  getLoginPage,
+  getVerifyPage,
 };
