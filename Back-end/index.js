@@ -1,15 +1,19 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDb = require("./database/database");
+const cors = require("cors");
 dotenv.config();
 const port = process.env.PORT || 8000;
-const router = require("./routes/Routes");
+const userRouter = require("./routes/userRoutes");
+const chatRouter = require("./routes/chatRoutes");
 const app = express();
 
 //middleware
 app.use(express.json());
+app.use(cors());
 // Router
-app.use("/api/user", router);
+app.use("/api/user", userRouter);
+app.use("/api/chat", chatRouter);
 
 app.listen(port, () => {
   console.log(`server is working on port: ${port}`);
